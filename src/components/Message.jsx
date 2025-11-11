@@ -1,19 +1,20 @@
 import React from 'react';
-import { Copy, Check, Sparkles } from 'lucide-react';
-import { formatMessageContent } from '/utils/messageFormatter';
+import { Copy, Check, Sparkles, User } from 'lucide-react';
 
-export const Message = ({ message, onCopy, copiedId }) => {
+export const Message = ({ message, onCopy, isCopied }) => {
     const isUser = message.role === 'user';
 
     return (
-        <div className={`flex gap-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div className={`flex gap-4 ${isUser ? 'justify-end' : 'justify-start'} ${isUser ? 'animate-slide-right' : 'animate-slide-left'}`}>
             <div className={`flex gap-4 max-w-3xl ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {/* Avatar */}
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    isUser ? 'bg-blue-600' : 'bg-gradient-to-br from-purple-600 to-blue-600'
+                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${
+                    isUser
+                        ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/50'
+                        : 'bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-violet-500/50'
                 }`}>
                     {isUser ? (
-                        <span className="text-white text-sm font-medium">U</span>
+                        <User className="w-5 h-5 text-white" />
                     ) : (
                         <Sparkles className="w-5 h-5 text-white" />
                     )}
@@ -21,11 +22,13 @@ export const Message = ({ message, onCopy, copiedId }) => {
 
                 {/* Message Content */}
                 <div className={`flex-1 ${isUser ? 'text-right' : 'text-left'}`}>
-                    <div className={`inline-block px-4 py-3 rounded-2xl ${
-                        isUser ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-100'
+                    <div className={`inline-block px-5 py-3 rounded-2xl shadow-lg ${
+                        isUser
+                            ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-indigo-500/30'
+                            : 'glass-light text-gray-100 shadow-violet-500/20'
                     }`}>
-                        <div className="text-sm leading-relaxed">
-                            {formatMessageContent(message.content, message.id, onCopy, copiedId)}
+                        <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                            {message.content}
                         </div>
                     </div>
 
@@ -33,13 +36,13 @@ export const Message = ({ message, onCopy, copiedId }) => {
                     {!isUser && (
                         <div className="mt-2 flex gap-2">
                             <button
-                                onClick={() => onCopy(message.content, `msg-${message.id}`)}
-                                className="text-xs text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
+                                onClick={() => onCopy(message.content)}
+                                className="text-xs text-gray-400 hover:text-gray-200 transition-all flex items-center gap-1 px-3 py-1 rounded-full hover:bg-white/5"
                             >
-                                {copiedId === `msg-${message.id}` ? (
+                                {isCopied ? (
                                     <>
-                                        <Check className="w-3 h-3" />
-                                        Copied
+                                        <Check className="w-3 h-3 text-green-400" />
+                                        <span className="text-green-400">Copied!</span>
                                     </>
                                 ) : (
                                     <>
